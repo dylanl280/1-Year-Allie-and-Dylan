@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Year Together — Allie & Dylan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(ellipse at 30% 20%, #ede0f7 0%, #e8d5f5 35%, #f0e8f5 60%, #faf5fc 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ── Layout ── */
+    .scene {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+    }
+
+    .page-wrapper {
+      width: 480px;
+      height: min(660px, calc(100dvh - 110px));
+      position: relative;
+    }
+
+    /* ── Page base ── */
+    .page {
+      position: absolute;
+      inset: 0;
+      background: #fefcff;
+      border-radius: 3px 18px 18px 3px;
+      box-shadow:
+        5px 5px 24px rgba(107, 61, 138, 0.18),
+        10px 10px 50px rgba(107, 61, 138, 0.08),
+        -3px 0 10px rgba(0,0,0,0.06),
+        inset -1px 0 0 rgba(180,140,210,0.15);
+      padding: 38px 44px 32px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(6px) scale(0.99);
+      transition: opacity 0.38s ease, transform 0.38s ease;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .page::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 8px;
+      background: linear-gradient(to right, #c4a0d8 0%, #e0c8f0 60%, transparent 100%);
+      border-radius: 3px 0 0 3px;
+    }
+
+    .page.active {
+      opacity: 1;
+      transform: none;
+      pointer-events: all;
+    }
+
+    /* ── Floral corners ── */
+    .fc {
+      position: absolute;
+      font-size: 16px;
+      color: #c0a0d4;
+      opacity: 0.55;
+      line-height: 1;
+    }
+    .fc-tl { top: 14px; left: 18px; }
+    .fc-tr { top: 14px; right: 14px; }
+    .fc-bl { bottom: 12px; left: 18px; }
+    .fc-br { bottom: 12px; right: 14px; }
+
+    /* ── Cover ── */
+    .cover-page {
+      background: url('Floral 2.png') center/cover no-repeat;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .cover-garland {
+      font-size: 26px;
+      letter-spacing: 10px;
+      color: #a870cc;
+      margin-bottom: 28px;
+      opacity: 0.75;
+    }
+
+    .cover-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #7a45a0;
+      text-align: center;
+    }
+
+    .cover-names {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 42px;
+      font-weight: 400;
+      font-style: italic;
+      color: #5e2d85;
+      text-align: center;
+      margin-top: 10px;
+      line-height: 1.2;
+    }
+
+    .cover-rule {
+      width: 140px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #b88ad4, transparent);
+      margin: 22px auto 8px;
+    }
+
+    .cover-love {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-style: italic;
+      color: #7a45a0;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .cover-year {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #9060b8;
+      text-align: center;
+      margin-top: 34px;
+    }
+
+    .cover-tagline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 16px;
+      font-style: italic;
+      color: #a878c8;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .cover-garland-bot {
+      font-size: 22px;
+      letter-spacing: 8px;
+      color: #a870cc;
+      margin-top: 30px;
+      opacity: 0.65;
+    }
+
+    /* ── Photo page ── */
+    .photo-page {
+      justify-content: space-between;
+    }
+
+    .photo-frame {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .photo-frame img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 3px;
+      box-shadow:
+        0 3px 12px rgba(107, 61, 138, 0.14),
+        0 1px 3px rgba(107, 61, 138, 0.1);
+      display: block;
+    }
+
+    .page-meta {
+      width: 100%;
+      padding-top: 14px;
+      border-top: 1px solid #e2ceee;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .page-date {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 13px;
+      font-style: italic;
+      color: #8850b4;
+      letter-spacing: 0.5px;
+    }
+
+    .page-location {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 11px;
+      color: #b090c8;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .caption-input {
+      width: 100%;
+      margin-top: 12px;
+      border: none;
+      border-bottom: 1px solid #dcc8ee;
+      background: transparent;
+      outline: none;
+      resize: none;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 13px;
+      font-style: italic;
+      color: #6a3d8a;
+      text-align: center;
+      line-height: 1.5;
+      padding: 2px 4px 4px;
+      min-height: 22px;
+      overflow: hidden;
+      user-select: text;
+      cursor: text;
+    }
+
+    .caption-input::placeholder {
+      color: #d4b8e4;
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    .page-num {
+      font-size: 9.5px;
+      color: #caaade;
+      letter-spacing: 2px;
+      margin-top: 8px;
+    }
+
+    /* ── Letter page ── */
+    .letter-page {
+      justify-content: flex-start;
+    }
+
+    .letter-salutation {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-style: italic;
+      color: #5e2d85;
+      align-self: flex-start;
+      margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+
+    .letter-rule {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, #d4b0e8, transparent);
+      margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+
+    .letter-input {
+      width: 100%;
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      resize: none;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 15px;
+      font-style: italic;
+      color: #4a2868;
+      line-height: 2;
+      padding: 0 4px;
+      user-select: text;
+      cursor: text;
+      overflow-y: auto;
+    }
+
+    .letter-input::placeholder {
+      color: #d4b8e4;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Closing ── */
+    .closing-page {
+      background: url('Floral 2.png') center/cover no-repeat;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .closing-garland {
+      font-size: 24px;
+      letter-spacing: 8px;
+      color: #a870cc;
+      margin-bottom: 30px;
+      opacity: 0.7;
+    }
+
+    .closing-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      font-style: italic;
+      font-weight: 400;
+      color: #5e2d85;
+      text-align: center;
+      line-height: 1.65;
+    }
+
+    .closing-rule {
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #b88ad4, transparent);
+      margin: 26px auto;
+    }
+
+    .closing-sub {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 13px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #9060b8;
+      text-align: center;
+    }
+
+    /* ── Nav buttons ── */
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px solid rgba(180, 140, 210, 0.5);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(6px);
+      color: #7040a8;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 18px rgba(107, 61, 138, 0.22);
+      transform: scale(1.07);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+
+    /* ── Bottom indicator ── */
+    .bottom-bar {
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .indicator {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 12px;
+      color: #9868b8;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .dot-nav {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #d4b0e8;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .dot.active {
+      background: #8040b0;
+      transform: scale(1.3);
+    }
+
+    /* ── Letter GIFs ── */
+    .scene-gif {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .scene-gif.visible { opacity: 1; }
+    #gifLeft  { left: 48px; }
+    #gifRight { right: 48px; }
+
+  </style>
+</head>
+<body>
+
+<img id="gifLeft"  src="IMG_023135.GIF" class="scene-gif" alt="">
+<img id="gifRight" src="IMG_023136.GIF" class="scene-gif" alt="">
+
+<div class="scene">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">&#8592;</button>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="page-wrapper" id="wrapper"></div>
+    <div class="bottom-bar">
+      <div class="indicator" id="indicator"></div>
+    </div>
+  </div>
+
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">&#8594;</button>
+</div>
+
+
+<script>
+const PAGES = [
+  { type: 'cover' },
+  { n:1,  date:'May 23, 2025',      loc:"Trader Joe's, The Forum — Peachtree Corners, GA", img:'IMG_020877_thumbnail.JPG' },
+  { n:2,  date:'June 29, 2025',     loc:'Amicalola Falls, GA',                               img:'IMG_021012_thumbnail.JPG' },
+  { n:3,  date:'July 6, 2025',      loc:'Painted Park, Atlanta BeltLine, GA',                 img:'IMG_021044_thumbnail.JPG' },
+  { n:4,  date:'August 3, 2025',    loc:'Cobb County Parks (Al Bishop Dr), Marietta, GA',    img:'IMG_021187_thumbnail.JPG' },
+  { n:5,  date:'August 3, 2025',    loc:'Cobb County Parks (Al Bishop Dr), Marietta, GA',    img:'IMG_021185_thumbnail.JPG' },
+  { n:6,  date:'August 3, 2025',    loc:'Cobb County Parks (Al Bishop Dr), Marietta, GA',    img:'IMG_021188_thumbnail.JPG' },
+  { n:7,  date:'August 17, 2025',   loc:'Fourth Ward, Charlotte, NC',                         img:'IMG_021281_thumbnail.JPG' },
+  { n:8,  date:'August 17, 2025',   loc:'Fourth Ward, Charlotte, NC',                         img:'IMG_021279_thumbnail.JPG' },
+  { n:9,  date:'August 17, 2025',   loc:'Fourth Ward, Charlotte, NC',                         img:'IMG_021286_thumbnail.JPG' },
+  { n:10, date:'October 18, 2025',  loc:'Mercier Orchards, Blue Ridge, GA',                   img:'IMG_021538_thumbnail.JPG' },
+  { n:11, date:'November 1, 2025',  loc:'701 Highland Ave, Atlanta, GA',                      img:'IMG_021630_thumbnail.JPG' },
+  { n:12, date:'December 6, 2025',  loc:'Atlanta Botanical Garden, Atlanta, GA',              img:'IMG_021740.jpg' },
+  { n:13, date:'December 6, 2025',  loc:'Atlanta Botanical Garden, Atlanta, GA',              img:'IMG_021734.jpg' },
+  { n:14, date:'December 6, 2025',  loc:'Atlanta Botanical Garden, Atlanta, GA',              img:'IMG_021739.jpg' },
+  { n:15, date:'January 31, 2026',  loc:'Waikiki, Honolulu, HI',                             img:'IMG_022155.jpg' },
+  { n:16, date:'February 1, 2026',  loc:'Diamond Head, Honolulu, HI',                         img:'IMG_022026.jpg' },
+  { n:17, date:'February 2, 2026',  loc:"North Shore — Haleʻiwa, HI",                        img:'IMG_022081.jpg' },
+  { n:18, date:'February 2, 2026',  loc:'Waimea Valley, North Shore, HI',                     img:'IMG_022106.jpg' },
+  { n:19, date:'February 3, 2026',  loc:"Makapuʻu Point Lighthouse Trail, HI",               img:'IMG_022394.jpg' },
+  { n:20, date:'February 3, 2026',  loc:'Ala Moana, Honolulu, HI',                           img:'IMG_022154.jpg' },
+  { n:21, date:'February 4, 2026',  loc:'Manoa, Honolulu, HI',                               img:'IMG_022366.jpg' },
+  { n:22, date:'February 4, 2026',  loc:'Manoa, Honolulu, HI',                               img:'IMG_022165.jpg' },
+  { n:23, date:'February 4, 2026',  loc:'Manoa, Honolulu, HI',                               img:'IMG_022179.jpg' },
+  { n:24, date:'February 4, 2026',  loc:'Waikiki, Honolulu, HI',                             img:'IMG_022197.jpg' },
+  { n:25, date:'February 4, 2026',  loc:'Ala Moana, Honolulu, HI',                           img:'IMG_022207.jpg' },
+  { n:26, date:'February 5, 2026',  loc:"Kāneʻohe, HI",                                     img:'IMG_022237.jpg' },
+  { n:27, date:'February 5, 2026',  loc:"Kāneʻohe, HI",                                     img:'IMG_022244.jpg' },
+  { n:28, date:'February 5, 2026',  loc:"Kāneʻohe, HI",                                     img:'IMG_022259.jpg' },
+  { n:29, date:'February 5, 2026',  loc:"Kāneʻohe, HI",                                     img:'IMG_022274.jpg' },
+  { n:30, date:'February 6, 2026',  loc:'Waimanalo, HI',                                     img:'IMG_022422.jpg' },
+  { n:31, date:'February 6, 2026',  loc:'Waimanalo, HI',                                     img:'IMG_022299.jpg' },
+  { n:32, date:'February 6, 2026',  loc:'Waimanalo, HI',                                     img:'IMG_022323.jpg' },
+  { n:33, date:'February 6, 2026',  loc:'Waikiki, Honolulu, HI',                             img:'IMG_022357.jpg' },
+  { n:34, date:'February 6, 2026',  loc:'Waikiki, Honolulu, HI',                             img:'IMG_022473.jpg' },
+  { n:35, date:'February 7, 2026',  loc:"Kakaʻako, Honolulu, HI",                           img:'IMG_022490.jpg' },
+  { n:36, date:'February 14, 2026', loc:'Atlanta, GA',                                        img:'IMG_022519.jpg' },
+  { n:37, date:'February 16, 2026', loc:'Franklin, NC',                                       img:'IMG_022532.jpg' },
+  { n:38, date:'February 16, 2026', loc:'Gatlinburg / Smoky Mtns, TN',                        img:'IMG_022536.jpg' },
+  { n:39, date:'February 16, 2026', loc:'Gatlinburg / Smoky Mtns, TN',                        img:'IMG_022546.jpg' },
+  { n:40, date:'February 17, 2026', loc:'Atlanta, GA',                                        img:'IMG_022547.jpg' },
+  { n:41, date:'February 27, 2026', loc:'Atlanta, GA',                                        img:'IMG_022611.jpg' },
+  { n:42, date:'March 7, 2026',     loc:'Atlanta, GA',                                        img:'IMG_022646.jpg' },
+  { n:43, date:'March 7, 2026',     loc:'Atlanta, GA',                                        img:'IMG_022661.jpg' },
+  { n:44, date:'March 26, 2026',    loc:'Atlanta, GA',                                        img:'IMG_022694.jpg' },
+  { n:45, date:'April 25, 2026',    loc:'Atlanta, GA',                                        img:'IMG_022805.jpg' },
+  { n:46, date:'May 1, 2026',       loc:'701 Highland Ave, Atlanta, GA',                      img:'IMG_022804_thumbnail.JPG' },
+  { n:47, date:'May 2, 2026',       loc:'Melt N Dip, Johns Creek, GA',                        img:'IMG_022813_thumbnail.JPG' },
+  { n:48, date:'May 28, 2026',      loc:'Atlanta, GA',                                        img:'IMG_023002_thumbnail.JPG' },
+  { n:49, date:'June 13, 2026',     loc:'Atlanta, GA',                                        img:'IMG_023096.jpg' },
+  { n:50, date:'June 14, 2026',     loc:'Feldwood Farms (U-Pick Blueberries), College Park, GA', img:'IMG_023100.jpg' },
+  { n:51, date:'June 14, 2026',     loc:'Osho Sushi, Chamblee, GA',                           img:'IMG_023101_thumbnail.JPG' },
+  { type: 'letter' },
+  { type: 'closing' },
+];
+
+const TOTAL = PAGES.length;
+let cur = 0;
+const wrapper = document.getElementById('wrapper');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const indicator = document.getElementById('indicator');
+
+function buildPage(p) {
+  const el = document.createElement('div');
+
+  if (p.type === 'cover') {
+    el.className = 'page cover-page';
+    el.innerHTML = `
+      <div class="fc fc-tl">✿</div><div class="fc fc-tr">✿</div>
+      <div class="fc fc-bl">✿</div><div class="fc fc-br">✿</div>
+      <div class="cover-garland">❀ &nbsp; ✦ &nbsp; ❀</div>
+      <div class="cover-title">One Year Together</div>
+      <div class="cover-names">Allie &amp; Dylan</div>
+      <div class="cover-rule"></div>
+      <div class="cover-love">I love you!</div>
+      <div class="cover-year">June 29, 2025 &nbsp;·&nbsp; June 29, 2026</div>
+      <div class="cover-tagline">A year of moments, all ours.</div>
+      <div class="cover-garland-bot">❀ &nbsp; ✦ &nbsp; ❀</div>
+    `;
+  } else if (p.type === 'letter') {
+    el.className = 'page letter-page';
+    el.innerHTML = `
+      <div class="fc fc-tl">✿</div><div class="fc fc-tr">✿</div>
+      <div class="letter-salutation">Dear Allie,</div>
+      <div class="letter-rule"></div>
+      <textarea class="letter-input" placeholder="Write your letter here…"></textarea>
+    `;
+  } else if (p.type === 'closing') {
+    el.className = 'page closing-page';
+    el.innerHTML = `
+      <div class="fc fc-tl">✿</div><div class="fc fc-tr">✿</div>
+      <div class="fc fc-bl">✿</div><div class="fc fc-br">✿</div>
+      <div class="closing-garland">❀ &nbsp; ✦ &nbsp; ❀</div>
+      <div class="closing-text">Here's to forever <br>Year One, and counting.</div>
+      <div class="closing-rule"></div>
+      <div class="closing-sub">I love you &nbsp;·&nbsp; Always</div>
+    `;
+  } else {
+    el.className = 'page photo-page';
+    el.innerHTML = `
+      <div class="fc fc-tl">✿</div><div class="fc fc-tr">✿</div>
+      <div class="fc fc-bl">✿</div><div class="fc fc-br">✿</div>
+      <div class="photo-frame">
+        <img src="${p.img}" alt="Page ${p.n}" loading="lazy">
+      </div>
+      <div class="page-meta">
+        <div class="page-date">${p.date}</div>
+        <div class="page-location">${p.loc}</div>
+        <textarea class="caption-input" placeholder="✦  write your caption  ✦" data-page="${p.n}" rows="1"></textarea>
+        <div class="page-num">${p.n} &nbsp;/&nbsp; 51</div>
+      </div>
+    `;
+  }
+  return el;
+}
+
+const els = PAGES.map(p => {
+  const el = buildPage(p);
+  wrapper.appendChild(el);
+  return el;
+});
+
+const CAPTIONS = {
+  1:  "The first time I ever bought flowers for you at Trader Joe's",
+  2:  "You playing in the water after our hike, we spent this whole day together",
+  3:  "Our first official photo as a couple!!",
+  4:  "Allie + Dylan lanterns",
+  5:  "Cute!! I am bad a drawing lol",
+  6:  "I love this photo of you!! It's one of my lock screens",
+  7:  "Our night out in Charlotte mirror pic",
+  8:  "Adorable photo of us holding hands!!",
+  9:  "Another adorable photo of us holding hands lol",
+  10: "Apple picking at Mercier!! I had so much fun this day",
+  11: "Ratatouille for Halloween!! such a cute costume",
+  12: "Botanical Lights!!",
+  13: "Cold but cute photo of us!",
+  14: "We look good in this one too!",
+  15: "First night in Hawaii with the best poke!!",
+  16: "Diamond Head sunrise hike!",
+  17: "Lol this photo is so cute and funny!!",
+  18: "Luau such a fun night!!",
+  19: "Lighthouse Trail!",
+  20: "Pokeworks! Best poke we had",
+  21: "Waterfall Trail!",
+  22: "Finger hearts!!!",
+  23: "My gorgeous girlfriend in the sun!!",
+  24: "Poke refuel!!",
+  25: "Cute photo of you in the free people set!!",
+  26: "Byodo Inn Temple!!",
+  27: "Who's flannel is that?? haha",
+  28: "Koi fish!!",
+  29: "Lol I like this one of us",
+  30: "Koko Crater we nearly died but we did it!!",
+  31: "More finger hearts!!",
+  32: "I look so sweaty and you look so cute!",
+  33: "Dinner! but you were roasting me about my photo taking skills",
+  34: "Water was stuck in your ear from Snorkeling lol",
+  35: "Endless poke!!",
+  36: "Valentines Mirror pic you look stunning!!",
+  37: "Sleepy after snowboarding!!",
+  38: "Thumbs up after a good run!!",
+  39: "Sorry for being a bad teacher!!",
+  40: "Nappy time!!",
+  41: "Your makeup looked so good this day!!",
+  42: "Who bought you those flowers!! hmm",
+  43: "Picnic date!! Cute dress and chicken salad!!",
+  44: "Drive in movie!! Look at that setup!!",
+  45: "BRUNO MARS!! AMAZING CONCERT",
+  46: "Lol I just thought this was funny",
+  47: "Dessert time, your hair looks good!!",
+  48: "Snuggles lol",
+  49: "Tired after Steak Frites with Chimichurri",
+  50: "Blueberry Picking!!",
+  51: "OSHO!!"
+};
+
+const LETTER = "I love you so much and thank you for being the most amazing girlfriend! I fall in love with you more and more each day because you make it so easy to love you! You have taught me a new kind of love that I did not know was possible and I thank you for that. You make me want to be a better person and better man for you. I love how easily we get along and can laugh together. I love our adventures of trying new foods and you have opened my eyes to countless things. I am always excited to spend time with you every chance I get!! I know halfway through this year we had some hard conversations but we have come out stronger and recently I feel like we have been the strongest we ever have! Thank you for the best year, happy one year and counting! I love you!!";
+
+// Load captions — localStorage overrides hard-coded for future edits
+wrapper.querySelectorAll('.caption-input').forEach(ta => {
+  const key = 'caption_' + ta.dataset.page;
+  ta.value = localStorage.getItem(key) || CAPTIONS[ta.dataset.page] || '';
+  autoResize(ta);
+  ta.addEventListener('input', () => {
+    localStorage.setItem(key, ta.value);
+    autoResize(ta);
+  });
+});
+
+// Letter textarea
+const letterTa = wrapper.querySelector('.letter-input');
+if (letterTa) {
+  letterTa.value = localStorage.getItem('letter') || LETTER;
+  letterTa.addEventListener('input', () => localStorage.setItem('letter', letterTa.value));
+}
+
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
+const gifLeft  = document.getElementById('gifLeft');
+const gifRight = document.getElementById('gifRight');
+
+function sync() {
+  els.forEach((el, i) => el.classList.toggle('active', i === cur));
+  prevBtn.disabled = cur === 0;
+  nextBtn.disabled = cur === TOTAL - 1;
+  const p = PAGES[cur];
+  const onLetter = p.type === 'letter';
+  gifLeft.classList.toggle('visible', onLetter);
+  gifRight.classList.toggle('visible', onLetter);
+  if (p.type === 'cover') indicator.textContent = '';
+  else if (p.type === 'closing') indicator.textContent = '';
+  else if (p.type === 'letter') indicator.textContent = 'I love you Allie!';
+  else indicator.textContent = `Page ${p.n} of 51`;
+}
+
+function go(dir) {
+  const next = cur + dir;
+  if (next < 0 || next >= TOTAL) return;
+  cur = next;
+  sync();
+}
+
+document.addEventListener('keydown', e => {
+  const active = document.activeElement;
+  if (active && (active.classList.contains('caption-input') || active.classList.contains('letter-input'))) return;
+  if (e.key === 'ArrowRight') go(1);
+  if (e.key === 'ArrowLeft')  go(-1);
+});
+
+let tx = 0;
+wrapper.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+wrapper.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 48) go(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+sync();
+</script>
+</body>
+</html>
