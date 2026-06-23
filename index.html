@@ -51,8 +51,6 @@
       flex-direction: column;
       align-items: center;
       opacity: 0;
-      transform: translateY(6px) scale(0.99);
-      transition: opacity 0.38s ease, transform 0.38s ease;
       pointer-events: none;
       overflow: hidden;
     }
@@ -68,9 +66,21 @@
 
     .page.active {
       opacity: 1;
-      transform: none;
       pointer-events: all;
     }
+
+    /* ── Flip animation ── */
+    .page-wrapper { perspective: 1200px; cursor: e-resize; }
+
+    @keyframes flipOutFwd  { from { transform: rotateY(0);      } to { transform: rotateY(-90deg); } }
+    @keyframes flipInFwd   { from { transform: rotateY(90deg);  } to { transform: rotateY(0);      } }
+    @keyframes flipOutBack { from { transform: rotateY(0);      } to { transform: rotateY(90deg);  } }
+    @keyframes flipInBack  { from { transform: rotateY(-90deg); } to { transform: rotateY(0);      } }
+
+    .page.flip-out-fwd  { opacity: 1; pointer-events: none; animation: flipOutFwd  0.2s ease-in  forwards; }
+    .page.flip-in-fwd   { opacity: 1; pointer-events: none; animation: flipInFwd   0.2s ease-out forwards; }
+    .page.flip-out-back { opacity: 1; pointer-events: none; animation: flipOutBack 0.2s ease-in  forwards; }
+    .page.flip-in-back  { opacity: 1; pointer-events: none; animation: flipInBack  0.2s ease-out forwards; }
 
     /* ── Floral corners ── */
     .fc {
@@ -338,36 +348,6 @@
       text-align: center;
     }
 
-    /* ── Nav buttons ── */
-    .nav-btn {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 1px solid rgba(180, 140, 210, 0.5);
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(6px);
-      color: #7040a8;
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .nav-btn:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 4px 18px rgba(107, 61, 138, 0.22);
-      transform: scale(1.07);
-    }
-
-    .nav-btn:disabled {
-      opacity: 0.25;
-      cursor: default;
-    }
-
     /* ── Bottom indicator ── */
     .bottom-bar {
       margin-top: 22px;
@@ -432,16 +412,12 @@
 <img id="gifRight" src="IMG_023136.GIF" class="scene-gif" alt="">
 
 <div class="scene">
-  <button class="nav-btn" id="prevBtn" onclick="go(-1)">&#8592;</button>
-
   <div style="display:flex;flex-direction:column;align-items:center;">
     <div class="page-wrapper" id="wrapper"></div>
     <div class="bottom-bar">
       <div class="indicator" id="indicator"></div>
     </div>
   </div>
-
-  <button class="nav-btn" id="nextBtn" onclick="go(1)">&#8594;</button>
 </div>
 
 
@@ -505,9 +481,9 @@ const PAGES = [
 
 const TOTAL = PAGES.length;
 let cur = 0;
+let isFlipping = false;
+const FLIP_MS = 200;
 const wrapper = document.getElementById('wrapper');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
 const indicator = document.getElementById('indicator');
 
 function buildPage(p) {
@@ -652,25 +628,45 @@ function autoResize(ta) {
 const gifLeft  = document.getElementById('gifLeft');
 const gifRight = document.getElementById('gifRight');
 
-function sync() {
-  els.forEach((el, i) => el.classList.toggle('active', i === cur));
-  prevBtn.disabled = cur === 0;
-  nextBtn.disabled = cur === TOTAL - 1;
+function syncUI() {
   const p = PAGES[cur];
   const onLetter = p.type === 'letter';
   gifLeft.classList.toggle('visible', onLetter);
   gifRight.classList.toggle('visible', onLetter);
-  if (p.type === 'cover') indicator.textContent = '';
-  else if (p.type === 'closing') indicator.textContent = '';
+  if (p.type === 'cover' || p.type === 'closing') indicator.textContent = '';
   else if (p.type === 'letter') indicator.textContent = 'I love you Allie!';
   else indicator.textContent = `Page ${p.n} of 51`;
 }
 
+function sync() {
+  els.forEach((el, i) => el.classList.toggle('active', i === cur));
+  syncUI();
+}
+
 function go(dir) {
+  if (isFlipping) return;
   const next = cur + dir;
   if (next < 0 || next >= TOTAL) return;
-  cur = next;
-  sync();
+
+  isFlipping = true;
+  const outEl = els[cur];
+  const inEl  = els[next];
+  const outCls = dir > 0 ? 'flip-out-fwd'  : 'flip-out-back';
+  const inCls  = dir > 0 ? 'flip-in-fwd'   : 'flip-in-back';
+
+  outEl.classList.remove('active');
+  outEl.classList.add(outCls);
+
+  setTimeout(() => {
+    outEl.classList.remove(outCls);
+    cur = next;
+    inEl.classList.add('active', inCls);
+    syncUI();
+    setTimeout(() => {
+      inEl.classList.remove(inCls);
+      isFlipping = false;
+    }, FLIP_MS);
+  }, FLIP_MS);
 }
 
 document.addEventListener('keydown', e => {
@@ -679,6 +675,19 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') go(1);
   if (e.key === 'ArrowLeft')  go(-1);
 });
+
+wrapper.addEventListener('click', e => {
+  if (e.target.tagName === 'TEXTAREA') return;
+  const rect = wrapper.getBoundingClientRect();
+  go(e.clientX - rect.left < rect.width / 2 ? -1 : 1);
+});
+
+wrapper.addEventListener('mousemove', e => {
+  if (document.activeElement?.tagName === 'TEXTAREA') { wrapper.style.cursor = ''; return; }
+  const rect = wrapper.getBoundingClientRect();
+  wrapper.style.cursor = e.clientX - rect.left < rect.width / 2 ? 'w-resize' : 'e-resize';
+});
+wrapper.addEventListener('mouseleave', () => { wrapper.style.cursor = ''; });
 
 let tx = 0;
 wrapper.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });

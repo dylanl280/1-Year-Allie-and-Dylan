@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:\\\\Users\\\\Dylan\\\\.claude\\\\projects\\\\c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan\\\\memory\\\\\" 2>/dev/null || echo \"directory empty or missing\")",
+      "Read(//c/Users/Dylan/.claude/projects/c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan/memory\" 2>/dev/**)",
+      "Read(//c/Users/Dylan/.claude/projects/c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan/memory/**)"
+    ]
+  }
+}
