@@ -39,7 +39,7 @@
     .page {
       position: absolute;
       inset: 0;
-      background: #fefcff;
+      background: linear-gradient(160deg, #fdf5ff 0%, #fefcff 50%, #f9f1fd 100%);
       border-radius: 3px 18px 18px 3px;
       box-shadow:
         5px 5px 24px rgba(107, 61, 138, 0.18),
@@ -51,6 +51,8 @@
       flex-direction: column;
       align-items: center;
       opacity: 0;
+      transform: translateY(6px) scale(0.99);
+      transition: opacity 0.38s ease, transform 0.38s ease;
       pointer-events: none;
       overflow: hidden;
     }
@@ -66,21 +68,9 @@
 
     .page.active {
       opacity: 1;
+      transform: none;
       pointer-events: all;
     }
-
-    /* ── Flip animation ── */
-    .page-wrapper { perspective: 1200px; cursor: e-resize; }
-
-    @keyframes flipOutFwd  { from { transform: rotateY(0);      } to { transform: rotateY(-90deg); } }
-    @keyframes flipInFwd   { from { transform: rotateY(90deg);  } to { transform: rotateY(0);      } }
-    @keyframes flipOutBack { from { transform: rotateY(0);      } to { transform: rotateY(90deg);  } }
-    @keyframes flipInBack  { from { transform: rotateY(-90deg); } to { transform: rotateY(0);      } }
-
-    .page.flip-out-fwd  { opacity: 1; pointer-events: none; animation: flipOutFwd  0.2s ease-in  forwards; }
-    .page.flip-in-fwd   { opacity: 1; pointer-events: none; animation: flipInFwd   0.2s ease-out forwards; }
-    .page.flip-out-back { opacity: 1; pointer-events: none; animation: flipOutBack 0.2s ease-in  forwards; }
-    .page.flip-in-back  { opacity: 1; pointer-events: none; animation: flipInBack  0.2s ease-out forwards; }
 
     /* ── Floral corners ── */
     .fc {
@@ -177,6 +167,18 @@
     /* ── Photo page ── */
     .photo-page {
       justify-content: space-between;
+      background:
+        linear-gradient(160deg, rgba(253, 245, 255, 0.87) 0%, rgba(254, 252, 255, 0.87) 50%, rgba(249, 241, 253, 0.87) 100%),
+        url('Final Floral.png') center / cover no-repeat;
+    }
+
+    .photo-page::after {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(180, 130, 210, 0.18);
+      border-radius: 8px;
+      pointer-events: none;
     }
 
     .photo-frame {
@@ -193,9 +195,10 @@
       max-height: 100%;
       object-fit: contain;
       border-radius: 3px;
+      border: 1px solid rgba(160, 110, 200, 0.35);
       box-shadow:
-        0 3px 12px rgba(107, 61, 138, 0.14),
-        0 1px 3px rgba(107, 61, 138, 0.1);
+        0 3px 12px rgba(107, 61, 138, 0.18),
+        0 1px 4px rgba(107, 61, 138, 0.12);
       display: block;
     }
 
@@ -218,7 +221,7 @@
     .page-location {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 11px;
-      color: #b090c8;
+      color: #8850b4;
       letter-spacing: 2.5px;
       text-transform: uppercase;
       margin-top: 4px;
@@ -227,35 +230,35 @@
     .caption-input {
       width: 100%;
       margin-top: 12px;
-      border: none;
-      border-bottom: 1px solid #dcc8ee;
-      background: transparent;
+      border: 1px solid rgba(180, 130, 210, 0.25);
+      border-radius: 5px;
+      background: rgba(180, 130, 210, 0.05);
       outline: none;
       resize: none;
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 13px;
+      font-size: 14px;
       font-style: italic;
       color: #6a3d8a;
       text-align: center;
-      line-height: 1.5;
-      padding: 2px 4px 4px;
-      min-height: 22px;
+      line-height: 1.6;
+      padding: 6px 10px 8px;
+      min-height: 34px;
       overflow: hidden;
       user-select: text;
       cursor: text;
     }
 
     .caption-input::placeholder {
-      color: #d4b8e4;
-      font-size: 8.5px;
-      letter-spacing: 2px;
+      color: #c4a0d8;
+      font-size: 11px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       font-style: normal;
     }
 
     .page-num {
-      font-size: 9.5px;
-      color: #caaade;
+      font-size: 10px;
+      color: #a882c8;
       letter-spacing: 2px;
       margin-top: 8px;
     }
@@ -348,6 +351,36 @@
       text-align: center;
     }
 
+    /* ── Nav buttons ── */
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px solid rgba(180, 140, 210, 0.5);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(6px);
+      color: #7040a8;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 18px rgba(107, 61, 138, 0.22);
+      transform: scale(1.07);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+
     /* ── Bottom indicator ── */
     .bottom-bar {
       margin-top: 22px;
@@ -412,12 +445,16 @@
 <img id="gifRight" src="IMG_023136.GIF" class="scene-gif" alt="">
 
 <div class="scene">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">&#8592;</button>
+
   <div style="display:flex;flex-direction:column;align-items:center;">
     <div class="page-wrapper" id="wrapper"></div>
     <div class="bottom-bar">
       <div class="indicator" id="indicator"></div>
     </div>
   </div>
+
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">&#8594;</button>
 </div>
 
 
@@ -481,9 +518,9 @@ const PAGES = [
 
 const TOTAL = PAGES.length;
 let cur = 0;
-let isFlipping = false;
-const FLIP_MS = 200;
 const wrapper = document.getElementById('wrapper');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 const indicator = document.getElementById('indicator');
 
 function buildPage(p) {
@@ -628,45 +665,25 @@ function autoResize(ta) {
 const gifLeft  = document.getElementById('gifLeft');
 const gifRight = document.getElementById('gifRight');
 
-function syncUI() {
+function sync() {
+  els.forEach((el, i) => el.classList.toggle('active', i === cur));
+  prevBtn.disabled = cur === 0;
+  nextBtn.disabled = cur === TOTAL - 1;
   const p = PAGES[cur];
   const onLetter = p.type === 'letter';
   gifLeft.classList.toggle('visible', onLetter);
   gifRight.classList.toggle('visible', onLetter);
-  if (p.type === 'cover' || p.type === 'closing') indicator.textContent = '';
+  if (p.type === 'cover') indicator.textContent = '';
+  else if (p.type === 'closing') indicator.textContent = '';
   else if (p.type === 'letter') indicator.textContent = 'I love you Allie!';
   else indicator.textContent = `Page ${p.n} of 51`;
 }
 
-function sync() {
-  els.forEach((el, i) => el.classList.toggle('active', i === cur));
-  syncUI();
-}
-
 function go(dir) {
-  if (isFlipping) return;
   const next = cur + dir;
   if (next < 0 || next >= TOTAL) return;
-
-  isFlipping = true;
-  const outEl = els[cur];
-  const inEl  = els[next];
-  const outCls = dir > 0 ? 'flip-out-fwd'  : 'flip-out-back';
-  const inCls  = dir > 0 ? 'flip-in-fwd'   : 'flip-in-back';
-
-  outEl.classList.remove('active');
-  outEl.classList.add(outCls);
-
-  setTimeout(() => {
-    outEl.classList.remove(outCls);
-    cur = next;
-    inEl.classList.add('active', inCls);
-    syncUI();
-    setTimeout(() => {
-      inEl.classList.remove(inCls);
-      isFlipping = false;
-    }, FLIP_MS);
-  }, FLIP_MS);
+  cur = next;
+  sync();
 }
 
 document.addEventListener('keydown', e => {
@@ -676,18 +693,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  go(-1);
 });
 
-wrapper.addEventListener('click', e => {
-  if (e.target.tagName === 'TEXTAREA') return;
-  const rect = wrapper.getBoundingClientRect();
-  go(e.clientX - rect.left < rect.width / 2 ? -1 : 1);
-});
-
-wrapper.addEventListener('mousemove', e => {
-  if (document.activeElement?.tagName === 'TEXTAREA') { wrapper.style.cursor = ''; return; }
-  const rect = wrapper.getBoundingClientRect();
-  wrapper.style.cursor = e.clientX - rect.left < rect.width / 2 ? 'w-resize' : 'e-resize';
-});
-wrapper.addEventListener('mouseleave', () => { wrapper.style.cursor = ''; });
 
 let tx = 0;
 wrapper.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
