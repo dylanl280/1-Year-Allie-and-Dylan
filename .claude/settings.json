@@ -3,7 +3,11 @@
     "allow": [
       "Bash(ls \"C:\\\\Users\\\\Dylan\\\\.claude\\\\projects\\\\c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan\\\\memory\\\\\" 2>/dev/null || echo \"directory empty or missing\")",
       "Read(//c/Users/Dylan/.claude/projects/c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan/memory\" 2>/dev/**)",
-      "Read(//c/Users/Dylan/.claude/projects/c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan/memory/**)"
+      "Read(//c/Users/Dylan/.claude/projects/c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan/memory/**)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"c:\\\\Users\\\\Dylan\\\\Claude\\\\Projects\\\\1 Year Allie and Dylan\\\\Floral 2.png\"\\); \"$\\($img.Width\\) x $\\($img.Height\\)\"; $img.Dispose\\(\\))",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
