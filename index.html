@@ -9,6 +9,10 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --paper: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='100'%20height='100'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'%20opacity='0.05'/%3E%3C/svg%3E");
+    }
+
     body {
       background: radial-gradient(ellipse at 30% 20%, #ede0f7 0%, #e8d5f5 35%, #f0e8f5 60%, #faf5fc 100%);
       min-height: 100vh;
@@ -39,7 +43,7 @@
     .page {
       position: absolute;
       inset: 0;
-      background: linear-gradient(160deg, #fdf5ff 0%, #fefcff 50%, #f9f1fd 100%);
+      background: var(--paper) repeat, linear-gradient(160deg, #fdf5ff 0%, #fefcff 50%, #f9f1fd 100%);
       border-radius: 3px 18px 18px 3px;
       box-shadow:
         5px 5px 24px rgba(107, 61, 138, 0.18),
@@ -72,6 +76,34 @@
       pointer-events: all;
     }
 
+    /* ── Cover petals ── */
+    .petal-field {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      border-radius: 3px 18px 18px 3px;
+      z-index: 5;
+      display: none;
+    }
+
+    .petal {
+      position: absolute;
+      top: -8%;
+      background: linear-gradient(135deg, #ffffff 0%, #f7d9e8 55%, #e3b6dd 100%);
+      border-radius: 50% 0 50% 0;
+      box-shadow: 0 1px 3px rgba(120, 70, 150, 0.25);
+      opacity: 0;
+      animation: petalFall linear infinite;
+    }
+
+    @keyframes petalFall {
+      0%   { transform: translateY(-10%) translateX(0) rotate(0deg);                    opacity: 0; }
+      12%  { opacity: 0.95; }
+      88%  { opacity: 0.95; }
+      100% { transform: translateY(115%) translateX(var(--sway)) rotate(var(--spin));   opacity: 0; }
+    }
+
     /* ── Floral corners ── */
     .fc {
       position: absolute;
@@ -87,7 +119,7 @@
 
     /* ── Cover ── */
     .cover-page {
-      background: url('Floral 2.png') center/cover no-repeat;
+      background: var(--paper) repeat, url('Floral 2.png') center/cover no-repeat;
       justify-content: center;
       gap: 0;
     }
@@ -122,9 +154,9 @@
     }
 
     .cover-rule {
-      width: 140px;
+      width: 160px;
       height: 1px;
-      background: linear-gradient(to right, transparent, #b88ad4, transparent);
+      background: linear-gradient(to right, transparent, #c9a86a 35%, #e7cd95 50%, #c9a86a 65%, transparent);
       margin: 22px auto 8px;
     }
 
@@ -168,6 +200,7 @@
     .photo-page {
       justify-content: space-between;
       background:
+        var(--paper) repeat,
         linear-gradient(160deg, rgba(253, 245, 255, 0.87) 0%, rgba(254, 252, 255, 0.87) 50%, rgba(249, 241, 253, 0.87) 100%),
         url('Final Floral.png') center / cover no-repeat;
     }
@@ -200,6 +233,14 @@
         0 3px 12px rgba(107, 61, 138, 0.18),
         0 1px 4px rgba(107, 61, 138, 0.12);
       display: block;
+    }
+
+    @keyframes photoRise {
+      from { opacity: 0; transform: translateY(16px) scale(0.985); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);     }
+    }
+    .page.active .photo-frame img {
+      animation: photoRise 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
 
     .page-meta {
@@ -312,7 +353,7 @@
 
     /* ── Closing ── */
     .closing-page {
-      background: url('Floral 2.png') center/cover no-repeat;
+      background: var(--paper) repeat, url('Floral 2.png') center/cover no-repeat;
       justify-content: center;
       gap: 0;
     }
@@ -336,9 +377,9 @@
     }
 
     .closing-rule {
-      width: 100px;
+      width: 120px;
       height: 1px;
-      background: linear-gradient(to right, transparent, #b88ad4, transparent);
+      background: linear-gradient(to right, transparent, #c9a86a 35%, #e7cd95 50%, #c9a86a 65%, transparent);
       margin: 26px auto;
     }
 
@@ -583,6 +624,25 @@ const els = PAGES.map(p => {
   return el;
 });
 
+// ── Drifting petals (cover only) ──
+const petalField = document.createElement('div');
+petalField.className = 'petal-field';
+const rand = (a, b) => a + Math.random() * (b - a);
+for (let i = 0; i < 12; i++) {
+  const petal = document.createElement('div');
+  petal.className = 'petal';
+  const size = rand(12, 22);
+  petal.style.width = size + 'px';
+  petal.style.height = size + 'px';
+  petal.style.left = rand(0, 92) + '%';
+  petal.style.animationDuration = rand(6, 11) + 's';
+  petal.style.animationDelay = rand(-11, 0) + 's';
+  petal.style.setProperty('--sway', rand(-40, 40) + 'px');
+  petal.style.setProperty('--spin', rand(180, 540) + 'deg');
+  petalField.appendChild(petal);
+}
+wrapper.appendChild(petalField);
+
 const CAPTIONS = {
   1:  "The first time I ever bought flowers for you at Trader Joe's",
   2:  "You playing in the water after our hike, we spent this whole day together",
@@ -670,6 +730,7 @@ function sync() {
   prevBtn.disabled = cur === 0;
   nextBtn.disabled = cur === TOTAL - 1;
   const p = PAGES[cur];
+  petalField.style.display = p.type === 'cover' ? 'block' : 'none';
   const onLetter = p.type === 'letter';
   gifLeft.classList.toggle('visible', onLetter);
   gifRight.classList.toggle('visible', onLetter);
