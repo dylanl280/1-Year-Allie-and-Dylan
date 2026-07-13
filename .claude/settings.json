@@ -7,7 +7,15 @@
       "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"c:\\\\Users\\\\Dylan\\\\Claude\\\\Projects\\\\1 Year Allie and Dylan\\\\Floral 2.png\"\\); \"$\\($img.Width\\) x $\\($img.Height\\)\"; $img.Dispose\\(\\))",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "PowerShell($src = \"C:\\\\Users\\\\Dylan\\\\Downloads\\\\1 Year pt2\"; $dst = \"C:\\\\Users\\\\Dylan\\\\Claude\\\\Projects\\\\1 Year Allie and Dylan\"; 277..286 | ForEach-Object { $f = \"IMG_023$_.jpg\"; Copy-Item -Path \\(Join-Path $src $f\\) -Destination \\(Join-Path $dst $f\\) -Force; \"Copied $f\" })",
+      "PowerShell($src = \"C:\\\\Users\\\\Dylan\\\\Downloads\\\\1 Year pt2\"; $dst = \"C:\\\\Users\\\\Dylan\\\\Claude\\\\Projects\\\\1 Year Allie and Dylan\"; 288..292 | ForEach-Object { $f = \"IMG_023$_.JPG\"; Copy-Item -Path \\(Join-Path $src $f\\) -Destination \\(Join-Path $dst $f\\) -Force; \"Copied $f\" })",
+      "Read(//c/Users/Dylan/AppData/Local/Temp/claude/c--Users-Dylan-Claude-Projects-1-Year-Allie-and-Dylan/f158bad9-3ec5-4fea-b3a5-8c474f3d18eb/scratchpad/**)",
+      "Bash(python align.py)",
+      "Bash(py align.py)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Dylan\\Downloads\\1 Year pt2"
     ]
   }
 }
