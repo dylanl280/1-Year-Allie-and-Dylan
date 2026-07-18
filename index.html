@@ -461,6 +461,111 @@
       transform: scale(1.3);
     }
 
+    /* ── Contents button + jump-to-page ── */
+    .bar-btn {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9060b8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 4px;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .bar-btn:hover { color: #6a3d8a; }
+
+    .jump-input {
+      width: 58px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 12px;
+      color: #6a3d8a;
+      text-align: center;
+      border: 1px solid rgba(180, 130, 210, 0.35);
+      border-radius: 5px;
+      background: rgba(180, 130, 210, 0.06);
+      outline: none;
+      padding: 3px 4px;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    .jump-input::-webkit-outer-spin-button,
+    .jump-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .jump-input::placeholder { color: #c4a0d8; letter-spacing: 1px; }
+
+    /* ── Table of contents ── */
+    .toc-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(70, 40, 95, 0.35);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 24px;
+    }
+    .toc-overlay.open { display: flex; }
+
+    .toc-panel {
+      width: min(460px, 92vw);
+      max-height: 82vh;
+      overflow-y: auto;
+      background: linear-gradient(160deg, #fdf5ff 0%, #fefcff 55%, #f9f1fd 100%);
+      border-radius: 12px;
+      box-shadow: 0 12px 50px rgba(70, 40, 95, 0.4);
+      padding: 30px 30px 26px;
+    }
+    .toc-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-style: italic;
+      color: #5e2d85;
+      text-align: center;
+    }
+    .toc-rule {
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #c9a86a 35%, #e7cd95 50%, #c9a86a 65%, transparent);
+      margin: 12px auto 16px;
+    }
+    .toc-month {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #b090c8;
+      margin: 16px 0 4px;
+      border-bottom: 1px solid #eaddf4;
+      padding-bottom: 4px;
+    }
+    .toc-month:first-child { margin-top: 0; }
+    .toc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .toc-row:hover { background: rgba(180, 130, 210, 0.12); }
+    .toc-loc {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 14px;
+      color: #4a2868;
+    }
+    .toc-pg {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 12px;
+      color: #a882c8;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
     /* ── Letter GIFs ── */
     .scene-gif {
       position: fixed;
@@ -491,11 +596,21 @@
   <div style="display:flex;flex-direction:column;align-items:center;">
     <div class="page-wrapper" id="wrapper"></div>
     <div class="bottom-bar">
+      <button class="bar-btn" id="tocBtn">&#9776; Contents</button>
       <div class="indicator" id="indicator"></div>
+      <input class="jump-input" id="jumpInput" type="number" min="1" placeholder="pg #">
     </div>
   </div>
 
   <button class="nav-btn" id="nextBtn" onclick="go(1)">&#8594;</button>
+</div>
+
+<div class="toc-overlay" id="tocOverlay">
+  <div class="toc-panel" id="tocPanel">
+    <div class="toc-heading">Our Year, Page by Page</div>
+    <div class="toc-rule"></div>
+    <div id="tocList"></div>
+  </div>
 </div>
 
 
@@ -785,9 +900,68 @@ function go(dir) {
   sync();
 }
 
+function goTo(index) {
+  if (index < 0 || index >= TOTAL) return;
+  cur = index;
+  sync();
+}
+
+// ── Table of contents ──
+const tocBtn     = document.getElementById('tocBtn');
+const tocOverlay = document.getElementById('tocOverlay');
+const tocList    = document.getElementById('tocList');
+const jumpInput  = document.getElementById('jumpInput');
+jumpInput.max = PHOTO_TOTAL;
+
+let lastMonth = '';
+PAGES.forEach((p, i) => {
+  if (p.type === 'cover') return;
+  let label;
+  if (p.type === 'letter')       label = 'A Letter to Allie';
+  else if (p.type === 'closing') label = "Here's to Forever";
+  else {
+    const parts = p.date.split(' ');
+    const month = parts[0] + ' ' + parts[parts.length - 1];
+    if (month !== lastMonth) {
+      const h = document.createElement('div');
+      h.className = 'toc-month';
+      h.textContent = month;
+      tocList.appendChild(h);
+      lastMonth = month;
+    }
+    label = p.loc || `Photo ${p.n}`;
+  }
+  const row = document.createElement('div');
+  row.className = 'toc-row';
+  const pg = p.type ? '' : `Pg ${p.n}`;
+  row.innerHTML = `<span class="toc-loc"></span><span class="toc-pg">${pg}</span>`;
+  row.querySelector('.toc-loc').textContent = label;
+  row.addEventListener('click', () => { goTo(i); closeTOC(); });
+  tocList.appendChild(row);
+});
+
+function openTOC()  { tocOverlay.classList.add('open'); }
+function closeTOC() { tocOverlay.classList.remove('open'); }
+tocBtn.addEventListener('click', openTOC);
+tocOverlay.addEventListener('click', e => { if (e.target === tocOverlay) closeTOC(); });
+
+// ── Jump to page ──
+function doJump() {
+  const n = parseInt(jumpInput.value, 10);
+  if (!n) return;
+  goTo(Math.min(Math.max(n, 1), PHOTO_TOTAL));  // photo n lives at index n (cover is 0)
+  jumpInput.value = '';
+  jumpInput.blur();
+}
+jumpInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); doJump(); }
+});
+
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeTOC(); return; }
+  if (tocOverlay.classList.contains('open')) return;
   const active = document.activeElement;
-  if (active && (active.classList.contains('caption-input') || active.classList.contains('letter-input'))) return;
+  if (active && (active.classList.contains('caption-input') || active.classList.contains('letter-input') || active.classList.contains('jump-input'))) return;
   if (e.key === 'ArrowRight') go(1);
   if (e.key === 'ArrowLeft')  go(-1);
 });
